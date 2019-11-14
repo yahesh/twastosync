@@ -1,6 +1,6 @@
 <?php
 
-  // twastosync v0.1a2
+  // twastosync v0.2a2
   //
   // Copyright (c) 2019, Yahe
   // All rights reserved.
@@ -24,10 +24,6 @@
 
   // include the configuration
   require_once(__DIR__."/config.php");
-
-  // static definition of tags to search for
-  define("OTAG", "<description>");
-  define("CTAG", "</description>");
 
   // static definition of maximum tweet length
   define("MAX_TWEET_LENGTH", 280);
@@ -59,21 +55,17 @@
           if (false !== $status) {
             // parse the entries from the feed
             $entries = [];
-            $isfirst = true;
-            do { 
-              // find the next description
-              $otag = stripos($content, OTAG);
-              $ctag = stripos($content, CTAG);
+            $rssfeed = simplexml_load_string($content);
+            if (false !== $rssfeed) {
+              if (property_exists($rssfeed, "channel") && property_exists($rssfeed->channel, "item")) {
+                // iterate through all feed items
+                foreach ($rssfeed->channel->item as $item) {
+                  if (property_exists($item, "description")) {
+                    // retrieve description from parsed XML
+                    $description = (string)$item->description;
 
-              if ((false !== $otag) && (false !== $ctag) && ($ctag > $otag)) {
-                // only continue if this is not the first entry
-                if (!$isfirst) {
-                  // get the next description substring
-                  $description = substr($content, $otag+strlen(OTAG), $ctag-$otag-strlen(OTAG));
-
-                  if (false !== $description) {
                     // cleanup the description
-                    $description = strip_tags(htmlspecialchars_decode($description, ENT_QUOTES));
+                    $description = htmlspecialchars_decode(strip_tags($description), ENT_QUOTES);
 
                     if ((null === FILTER_STRING) || (false !== stripos($description, FILTER_STRING))) {
                       // add entry to entries list
@@ -81,12 +73,8 @@
                     }
                   }
                 }
-                $isfirst = false;
-
-                // prepare the content for the next round
-                $content = substr($content, $ctag+strlen(CTAG));
               }
-            } while ((false !== $otag) && (false !== $ctag) && ($ctag > $otag));
+            }
             $entries = array_reverse($entries);
 
             // use TwitterOAuth to create connection
