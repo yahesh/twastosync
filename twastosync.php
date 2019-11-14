@@ -1,6 +1,6 @@
 <?php
 
-  // twastosync v0.1a1
+  // twastosync v0.1a2
   //
   // Copyright (c) 2019, Yahe
   // All rights reserved.
@@ -104,7 +104,7 @@
               if (!array_key_exists($hash, $status)) {
                 // enforce the maximum tweet length
                 if (MAX_TWEET_LENGTH < strlen($entry)) {
-                  $entry = substr($entry, 0, -strlen(MAX_TWEET_SUFFIX)).MAX_TWEET_SUFFIX;
+                  $entry = substr($entry, 0, MAX_TWEET_LENGTH-strlen(MAX_TWEET_SUFFIX)).MAX_TWEET_SUFFIX;
                 }
 
                 // execute the  POST request
