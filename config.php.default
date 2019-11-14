@@ -1,0 +1,21 @@
+<?php
+
+  // only Mastodon toots containing this string will be synced,
+  // set to NULL if you don't want to use the filter
+  define("FILTER_STRING", "#twitter");
+
+  // configure in the form "https://url-of-mastodon-instance/@username.rss"
+  define("MASTODON_FEED", "https://url-of-mastodon-instance/@username.rss");
+
+  // configure according to https://developer.twitter.com/en/apps/
+  define("API_KEY",             "");
+  define("API_SECRET_KEY",      "");
+  define("ACCESS_TOKEN",        "");
+  define("ACCESS_TOKEN_SECRET", "");
+
+  // configure the lock file to prevent parallel executions
+  define("LOCK_FILE", __DIR__."/lock");
+
+  // configure the status file to store the last toot that has been handled
+  define("STATUS_FILE", __DIR__."/status");
+
