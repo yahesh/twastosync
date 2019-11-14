@@ -1,6 +1,6 @@
 <?php
 
-  // twastosync v0.1a0
+  // twastosync v0.1a1
   //
   // Copyright (c) 2019, Yahe
   // All rights reserved.
@@ -28,6 +28,12 @@
   // static definition of tags to search for
   define("OTAG", "<description>");
   define("CTAG", "</description>");
+
+  // static definition of maximum tweet length
+  define("MAX_TWEET_LENGTH", 280);
+
+  // static definition of suffix to append to long tweets
+  define("MAX_TWEET_SUFFIX", " [...]");
 
   // static definition of success return code
   define("SUCCESS_CODE", 200);
@@ -96,6 +102,11 @@
 
               // check if this is a know entry
               if (!array_key_exists($hash, $status)) {
+                // enforce the maximum tweet length
+                if (MAX_TWEET_LENGTH < strlen($entry)) {
+                  $entry = substr($entry, 0, -strlen(MAX_TWEET_SUFFIX)).MAX_TWEET_SUFFIX;
+                }
+
                 // execute the  POST request
                 $result = $connection->post("statuses/update", ["status" => $entry]);
 
