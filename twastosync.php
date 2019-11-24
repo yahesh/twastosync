@@ -1,6 +1,6 @@
 <?php
 
-  // twastosync v0.2a2
+  // twastosync v0.2a3
   //
   // Copyright (c) 2019, Yahe
   // All rights reserved.
@@ -65,7 +65,7 @@
                     $description = (string)$item->description;
 
                     // cleanup the description
-                    $description = htmlspecialchars_decode(strip_tags($description), ENT_QUOTES);
+                    $description = html_entity_decode(strip_tags($description), ENT_QUOTES);
 
                     if ((null === FILTER_STRING) || (false !== stripos($description, FILTER_STRING))) {
                       // add entry to entries list
