@@ -4,6 +4,15 @@
   // set to NULL if you don't want to use the filter
   define("FILTER_STRING", "#twitter");
 
+  // remove the filter string from the synced tweet,
+  // will NOT remove additional whitespace around the filter string
+  define("REMOVE_FILTER_STRING", false);
+
+  // remove excessive whitespace at the beginning and end of the synced tweet,
+  // might also be helpful when removing the filter string at the beginning or
+  // end of the synced tweet
+  define("TRIM_MESSAGE", false);
+
   // configure in the form "https://url-of-mastodon-instance/@username.rss"
   define("MASTODON_FEED", "https://url-of-mastodon-instance/@username.rss");
 

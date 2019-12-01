@@ -1,6 +1,6 @@
 <?php
 
-  // twastosync v0.2a4
+  // twastosync v0.3a0
   //
   // Copyright (c) 2019, Yahe
   // All rights reserved.
@@ -88,8 +88,18 @@
             foreach ($entries as $entry) {
               $hash = hash("sha256", $entry, false);
 
-              // check if this is a know entry
+              // check if this is a known entry
               if (!array_key_exists($hash, $status)) {
+                // remove the filter string
+                if ((null !== FILTER_STRING) && REMOVE_FILTER_STRING) {
+                  $entry = str_replace(FILTER_STRING, "", $entry);
+                }
+
+                // trim the entry
+                if (TRIM_MESSAGE) {
+                  $entry = trim($entry);
+                }
+
                 // enforce the maximum tweet length
                 if (MAX_TWEET_LENGTH < strlen($entry)) {
                   $entry = substr($entry, 0, MAX_TWEET_LENGTH-strlen(MAX_TWEET_SUFFIX)).MAX_TWEET_SUFFIX;
