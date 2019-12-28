@@ -1,6 +1,6 @@
 <?php
 
-  // twastosync v0.3a0
+  // twastosync v0.4a0
   //
   // Copyright (c) 2019, Yahe
   // All rights reserved.
@@ -30,6 +30,9 @@
 
   // static definition of suffix to append to long tweets
   define("MAX_TWEET_SUFFIX", " [...]");
+
+  // static definition of NOT filter string prefix
+  define("NOT_FILTER_PREFIX", "!");
 
   // static definition of success return code
   define("SUCCESS_CODE", 200);
@@ -67,7 +70,11 @@
                     // cleanup the description
                     $description = html_entity_decode(strip_tags($description), ENT_QUOTES | ENT_HTML5);
 
-                    if ((null === FILTER_STRING) || (false !== stripos($description, FILTER_STRING))) {
+		    if ((null === FILTER_STRING) ||
+                        ((0 === stripos(FILTER_STRING, NOT_FILTER_PREFIX)) &&
+                         (false === stripos($description, substr(FILTER_STRING, strlen(NOT_FILTER_PREFIX))))) ||
+                        ((0 !== stripos(FILTER_STRING, NOT_FILTER_PREFIX)) &&
+                         (false !== stripos($description, FILTER_STRING)))) {
                       // add entry to entries list
                       $entries[] = $description;
                     }
@@ -92,7 +99,11 @@
               if (!array_key_exists($hash, $status)) {
                 // remove the filter string
                 if ((null !== FILTER_STRING) && REMOVE_FILTER_STRING) {
-                  $entry = str_replace(FILTER_STRING, "", $entry);
+                  if (0 === stripos(FILTER_STRING, NOT_FILTER_PREFIX)) {
+                    $entry = str_replace(substr(FILTER_STRING, strlen(NOT_FILTER_PREFIX)), "", $entry);
+                  } else {
+                    $entry = str_replace(FILTER_STRING, "", $entry);
+                  }
                 }
 
                 // trim the entry

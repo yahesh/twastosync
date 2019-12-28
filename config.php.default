@@ -1,7 +1,9 @@
 <?php
 
   // only Mastodon toots containing this string will be synced,
-  // set to NULL if you don't want to use the filter
+  // prepend this string with an exclamation mark and ALL toots EXCEPT those
+  // containing this string (without the prepended exclamation mark) will be
+  // synced, set to NULL if you don't want to use the filter
   define("FILTER_STRING", "#twitter");
 
   // remove the filter string from the synced tweet,
