@@ -1,6 +1,6 @@
 <?php
 
-  // twastosync v0.4a0
+  // twastosync v0.4a1
   //
   // Copyright (c) 2019, Yahe
   // All rights reserved.
@@ -99,11 +99,7 @@
               if (!array_key_exists($hash, $status)) {
                 // remove the filter string
                 if ((null !== FILTER_STRING) && REMOVE_FILTER_STRING) {
-                  if (0 === stripos(FILTER_STRING, NOT_FILTER_PREFIX)) {
-                    $entry = str_replace(substr(FILTER_STRING, strlen(NOT_FILTER_PREFIX)), "", $entry);
-                  } else {
-                    $entry = str_replace(FILTER_STRING, "", $entry);
-                  }
+                  $entry = str_replace(FILTER_STRING, "", $entry);
                 }
 
                 // trim the entry
