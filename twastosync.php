@@ -1,6 +1,6 @@
 <?php
 
-  // twastosync v0.5a0
+  // twastosync v0.5a1
   //
   // Copyright (c) 2019-2020, Yahe
   // All rights reserved.
@@ -26,6 +26,7 @@
   require_once(__DIR__."/config.php");
 
   // static definitions
+  define("LINE_BREAK",          "<br />");  // line break in description used for line breaks
   define("MAX_TWEET_LENGTH",    280);       // maximum tweet length
   define("MAX_TWEET_SUFFIX",    " [...]");  // suffix to append to long tweets
   define("NOT_FILTER_PREFIX",   "!");       // NOT filter string prefix
@@ -62,7 +63,8 @@
                     // retrieve description from parsed XML
                     $description = (string)$item->description;
 
-                    // replace paragraph delimiters with line breaks
+                    // replace line breaks
+                    $description = str_ireplace(LINE_BREAK,          PHP_EOL,         $description);
                     $description = str_ireplace(PARAGRAPH_DELIMITER, PHP_EOL.PHP_EOL, $description);
 
                     // cleanup the description
