@@ -1,8 +1,8 @@
 <?php
 
-  // twastosync v0.4a1
+  // twastosync v0.5a0
   //
-  // Copyright (c) 2019, Yahe
+  // Copyright (c) 2019-2020, Yahe
   // All rights reserved.
   //
   // Usage:
@@ -25,17 +25,12 @@
   // include the configuration
   require_once(__DIR__."/config.php");
 
-  // static definition of maximum tweet length
-  define("MAX_TWEET_LENGTH", 280);
-
-  // static definition of suffix to append to long tweets
-  define("MAX_TWEET_SUFFIX", " [...]");
-
-  // static definition of NOT filter string prefix
-  define("NOT_FILTER_PREFIX", "!");
-
-  // static definition of success return code
-  define("SUCCESS_CODE", 200);
+  // static definitions
+  define("MAX_TWEET_LENGTH",    280);       // maximum tweet length
+  define("MAX_TWEET_SUFFIX",    " [...]");  // suffix to append to long tweets
+  define("NOT_FILTER_PREFIX",   "!");       // NOT filter string prefix
+  define("PARAGRAPH_DELIMITER", "</p><p>"); // paragraph delimiter in description used for line breaks
+  define("SUCCESS_CODE",        200);       // success return code
 
   function main($arguments) {
     if (disallow_concurrency(LOCK_FILE)) {
@@ -66,6 +61,9 @@
                   if (property_exists($item, "description")) {
                     // retrieve description from parsed XML
                     $description = (string)$item->description;
+
+                    // replace paragraph delimiters with line breaks
+                    $description = str_ireplace(PARAGRAPH_DELIMITER, PHP_EOL.PHP_EOL, $description);
 
                     // cleanup the description
                     $description = html_entity_decode(strip_tags($description), ENT_QUOTES | ENT_HTML5);
