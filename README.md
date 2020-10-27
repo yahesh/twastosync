@@ -13,7 +13,7 @@ This script can be used to sync Mastodon toots to Twitter. It uses the [TwitterO
 
 ## Usage
 ```
-php ./twastosync.php
+./twastosync.php
 ```
 
 ## License

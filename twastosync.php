@@ -1,12 +1,13 @@
+#!/usr/bin/php
 <?php
 
-  // twastosync v0.5a1
+  // twastosync v0.5a2
   //
   // Copyright (c) 2019-2020, Yahe
   // All rights reserved.
   //
   // Usage:
-  // > php ./twastosync.php
+  // > ./twastosync.php
   //
   // This application is released under the BSD license.
   // See the LICENSE file for further information.
