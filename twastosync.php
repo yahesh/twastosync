@@ -1,9 +1,9 @@
 #!/usr/bin/php
 <?php
 
-  // twastosync v0.5a2
+  // twastosync v0.6a0
   //
-  // Copyright (c) 2019-2020, Yahe
+  // Copyright (c) 2019-2021, Yahe
   // All rights reserved.
   //
   // Usage:
@@ -30,6 +30,7 @@
   define("LINE_BREAK",          "<br />");  // line break in description used for line breaks
   define("MAX_TWEET_LENGTH",    280);       // maximum tweet length
   define("MAX_TWEET_SUFFIX",    " [...]");  // suffix to append to long tweets
+  define("MENTION_PREFIX",      "@");       // do not sync mentions
   define("NOT_FILTER_PREFIX",   "!");       // NOT filter string prefix
   define("PARAGRAPH_DELIMITER", "</p><p>"); // paragraph delimiter in description used for line breaks
   define("SUCCESS_CODE",        200);       // success return code
@@ -55,7 +56,7 @@
           if (false !== $status) {
             // parse the entries from the feed
             $entries = [];
-            $rssfeed = simplexml_load_string($content);
+            $rssfeed = @simplexml_load_string($content);
             if (false !== $rssfeed) {
               if (property_exists($rssfeed, "channel") && property_exists($rssfeed->channel, "item")) {
                 // iterate through all feed items
@@ -71,11 +72,12 @@
                     // cleanup the description
                     $description = html_entity_decode(strip_tags($description), ENT_QUOTES | ENT_HTML5);
 
-		    if ((null === FILTER_STRING) ||
-                        ((0 === stripos(FILTER_STRING, NOT_FILTER_PREFIX)) &&
-                         (false === stripos($description, substr(FILTER_STRING, strlen(NOT_FILTER_PREFIX))))) ||
-                        ((0 !== stripos(FILTER_STRING, NOT_FILTER_PREFIX)) &&
-                         (false !== stripos($description, FILTER_STRING)))) {
+                    if (((null === FILTER_STRING) ||
+                         ((0 === stripos(FILTER_STRING, NOT_FILTER_PREFIX)) &&
+                          (false === stripos($description, substr(FILTER_STRING, strlen(NOT_FILTER_PREFIX))))) ||
+                         ((0 !== stripos(FILTER_STRING, NOT_FILTER_PREFIX)) &&
+                          (false !== stripos($description, FILTER_STRING)))) &&
+                        (false === stripos($description, MENTION_PREFIX))) {
                       // add entry to entries list
                       $entries[] = $description;
                     }
