@@ -47,6 +47,9 @@
             $status = [];
           } else {
             $status = file(STATUS_FILE, FILE_IGNORE_NEW_LINES);
+            if (false !== $status) {
+              $status = array_combine($status, $status);
+            }
           }
 
           // only proceed if we have a new status or the status could be read from file
