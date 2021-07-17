@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 
-  // twastosync v0.6a0
+  // twastosync v0.6a1
   //
   // Copyright (c) 2019-2021, Yahe
   // All rights reserved.
@@ -47,9 +47,6 @@
             $status = [];
           } else {
             $status = file(STATUS_FILE, FILE_IGNORE_NEW_LINES);
-            if (false !== $status) {
-              $status = array_combine($status, $status);
-            }
           }
 
           // only proceed if we have a new status or the status could be read from file
