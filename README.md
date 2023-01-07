@@ -21,6 +21,6 @@ This application is released under the MIT license.
 See the [LICENSE](LICENSE) file for further information.
 
 ## Copyright
-Copyright (c) 2019-2021, Yahe
+Copyright (c) 2019-2023, Yahe
 
 All rights reserved.

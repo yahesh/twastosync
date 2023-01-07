@@ -1,9 +1,9 @@
 #!/usr/bin/php
 <?php
 
-  // twastosync v0.6a1
+  // twastosync v0.7a0
   //
-  // Copyright (c) 2019-2021, Yahe
+  // Copyright (c) 2019-2023, Yahe
   // All rights reserved.
   //
   // Usage:
@@ -63,14 +63,14 @@
                 foreach ($rssfeed->channel->item as $item) {
                   if (property_exists($item, "description")) {
                     // retrieve description from parsed XML
-                    $description = (string)$item->description;
+                    $description = html_entity_decode((string)$item->description, ENT_QUOTES | ENT_HTML5);
 
                     // replace line breaks
                     $description = str_ireplace(LINE_BREAK,          PHP_EOL,         $description);
                     $description = str_ireplace(PARAGRAPH_DELIMITER, PHP_EOL.PHP_EOL, $description);
 
                     // cleanup the description
-                    $description = html_entity_decode(strip_tags($description), ENT_QUOTES | ENT_HTML5);
+                    $description = strip_tags($description);
 
                     if (((null === FILTER_STRING) ||
                          ((0 === stripos(FILTER_STRING, NOT_FILTER_PREFIX)) &&
