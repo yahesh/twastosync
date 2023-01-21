@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 
-  // twastosync v0.7a0
+  // twastosync v0.7a1
   //
   // Copyright (c) 2019-2023, Yahe
   // All rights reserved.
@@ -27,6 +27,7 @@
   require_once(__DIR__."/config.php");
 
   // static definitions
+  define("HORIZONTAL_LINE",     "<hr />");  // horizontal line in description used for content warnings
   define("LINE_BREAK",          "<br />");  // line break in description used for line breaks
   define("MAX_TWEET_LENGTH",    280);       // maximum tweet length
   define("MAX_TWEET_SUFFIX",    " [...]");  // suffix to append to long tweets
@@ -66,6 +67,7 @@
                     $description = html_entity_decode((string)$item->description, ENT_QUOTES | ENT_HTML5);
 
                     // replace line breaks
+                    $description = str_ireplace(HORIZONTAL_LINE,     PHP_EOL.PHP_EOL, $description);
                     $description = str_ireplace(LINE_BREAK,          PHP_EOL,         $description);
                     $description = str_ireplace(PARAGRAPH_DELIMITER, PHP_EOL.PHP_EOL, $description);
 
