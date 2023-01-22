@@ -24,6 +24,12 @@
   define("ACCESS_TOKEN",        "");
   define("ACCESS_TOKEN_SECRET", "");
 
+  // configure the user the script shall run as
+  define("PROCESS_USER", "twastosync");
+
+  // configure the group the script shall run as
+  define("PROCESS_GROUP", "twastosync");
+
   // configure the lock file to prevent parallel executions
   define("LOCK_FILE", __DIR__."/lock");
 
