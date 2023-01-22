@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-  // twastosync v0.8a1
+  // twastosync v0.8a2
   //
   // Copyright (c) 2019-2023, Yahe
   // All rights reserved.
@@ -191,7 +191,7 @@
                       if ($success) {
                         // download media file to temporary file
                         $success = file_put_contents($tmpfile, file_get_contents($media[MEDIACONTENT]));
-                        if ($success)
+                        if ($success) {
                           // execute the media upload POST request
                           $result  = $connection->upload(TWITTER_MEDIA_METHOD, [MEDIA => $tmpfile]);
                           $success = (SUCCESS_CODE === $connection->getLastHttpCode());
