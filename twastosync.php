@@ -185,18 +185,30 @@
                   $media_ids = [];
                   foreach ($entry[MEDIA] as $media) {
                     if ($success) {
-                      // execute the media upload POST request
-                      $result  = $connection->upload(TWITTER_MEDIA_METHOD, [MEDIA => $media[MEDIACONTENT]]);
-                      $success = (SUCCESS_CODE === $connection->getLastHttpCode());
+                      // generate temp file name
+                      $tmpfile = tempnam(sys_get_temp_dir(), "twastosync");
+                      $success = (false !== $tmpfile);
                       if ($success) {
-                        // append media id to list
-                        $media_ids[] = $result->media_id_string;
-
-                        // check if we need to set an alt-text
-                        if (null !== $media[MEDIADESCRIPTION]) {
-                          // execute the alt-text creation POST request
-                          $result  = $connection->post(TWITTER_METADATA_METHOD, [MEDIA_ID => $result->media_id_string, ALT_TEXT => [TEXT => $media[MEDIADESCRIPTION]]]);
+                        // download media file to temporary file
+                        $success = file_put_contents($tmpfile, file_get_contents($media[MEDIACONTENT]));
+                        if ($success)
+                          // execute the media upload POST request
+                          $result  = $connection->upload(TWITTER_MEDIA_METHOD, [MEDIA => $tmpfile]);
                           $success = (SUCCESS_CODE === $connection->getLastHttpCode());
+                          if ($success) {
+                            // append media id to list
+                            $media_ids[] = $result->media_id_string;
+
+                            // check if we need to set an alt-text
+                            if (null !== $media[MEDIADESCRIPTION]) {
+                              // execute the alt-text creation POST request
+                              $result  = $connection->post(TWITTER_METADATA_METHOD, [MEDIA_ID => $result->media_id_string, ALT_TEXT => [TEXT => $media[MEDIADESCRIPTION]]]);
+                              $success = (SUCCESS_CODE === $connection->getLastHttpCode());
+                            }
+                          }
+
+                          // try to delete the temporary file in any case
+                          unlink($tmpfile);
                         }
                       }
                     }
