@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-  // twastosync v0.8a0
+  // twastosync v0.8a1
   //
   // Copyright (c) 2019-2023, Yahe
   // All rights reserved.
@@ -157,7 +157,7 @@
               $connection->setTimeouts(30, 30);
 
               // iterate through all entries and tweet them if we don't know them
-              $newstatus = false;
+              $newknownlist = false;
               foreach ($entries as $entry) {
                 $hash = hash("sha256", $entry[STATUS], false);
 
@@ -214,12 +214,12 @@
                     $knownlist[$hash] = $hash;
                     $newknownlist     = true;
 
-                    print("TWEETED: $entry[STATUS]\n");
+                    print("TWEETED: ".$entry[STATUS]."\n");
                   } else {
-                    print("FAILED: $entry[STATUS]\n");
+                    print("FAILED: ".$entry[STATUS]."\n");
                   }
                 } else {
-                  print("SKIPPED: $entry[STATUS]\n");
+                  print("SKIPPED: ".$entry[STATUS]."\n");
                 }
               }
 
