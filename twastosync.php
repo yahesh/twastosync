@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-  // twastosync v0.8a2
+  // twastosync v0.8a3
   //
   // Copyright (c) 2019-2023, Yahe
   // All rights reserved.
@@ -202,7 +202,7 @@
                             // check if we need to set an alt-text
                             if (null !== $media[MEDIADESCRIPTION]) {
                               // execute the alt-text creation POST request
-                              $result  = $connection->post(TWITTER_METADATA_METHOD, [MEDIA_ID => $result->media_id_string, ALT_TEXT => [TEXT => $media[MEDIADESCRIPTION]]]);
+                              $result  = $connection->post(TWITTER_METADATA_METHOD, [MEDIA_ID => $result->media_id_string, ALT_TEXT => [TEXT => $media[MEDIADESCRIPTION]]], true);
                               $success = (SUCCESS_CODE === $connection->getLastHttpCode());
                             }
                           }
