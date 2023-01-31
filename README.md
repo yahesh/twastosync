@@ -2,6 +2,13 @@
 
 This script can be used to sync Mastodon toots to Twitter. It uses the [TwitterOAuth](https://twitteroauth.com/) library to access the official Twitter API.
 
+## Features
+* only sync posts that contain certain text
+* do not sync posts that contain certain text
+* do not sync posts that mention someone
+* support for media uploads
+* support for to long posts
+
 ## Preparation
 1. Log in to [twitter.com](https://twitter.com/) and visit [developer.twitter.com/en/apps](https://developer.twitter.com/en/apps).
 2. Click on `Create New App` and enter the requested, mandatory information, agree to the Twitter Developer Agreement and click on `Create your Twitter application`.

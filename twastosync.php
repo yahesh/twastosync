@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-  // twastosync v0.8a3
+  // twastosync v0.9a0
   //
   // Copyright (c) 2019-2023, Yahe
   // All rights reserved.
@@ -33,8 +33,9 @@
   define("HORIZONTAL_LINE",          "<hr />");                // horizontal line in description used for content warnings
   define("ITEM",                     "item");                  // item field name
   define("LINE_BREAK",               "<br />");                // line break in description used for line breaks
+  define("LINK",                     "link");                  // link field name
   define("MAX_TWEET_LENGTH",         280);                     // maximum tweet length
-  define("MAX_TWEET_SUFFIX",         " [...]");                // suffix to append to long tweets
+  define("MAX_TWEET_SUFFIX",         " [...] ");               // suffix to append to long tweets
   define("MEDIA",                    "media");                 // media field name
   define("MEDIA_CONTENT_PREFIX",     "<media:content");        // media content prefix we need to replace
   define("MEDIA_CONTENT_SUFFIX",     "</media:content>");      // media content suffix we need to replace
@@ -61,6 +62,7 @@
   define("TEXT",                     "text");                  // text field name
   define("TWITTER_MEDIA_METHOD",     "media/upload");          // twitter API method to upload a media file
   define("TWITTER_METADATA_METHOD",  "media/metadata/create"); // twitter API method to add alt text to a media file
+  define("TWITTER_SHORT_URL_LENGTH", 32);                      // assume a bigger short URL length than currently needed
   define("TWITTER_STATUS_METHOD",    "statuses/update");       // twitter API method to post a status
   define("URL",                      "url");                   // url field name
 
@@ -96,8 +98,34 @@
                 if (property_exists($rssfeed, CHANNEL) && property_exists($rssfeed->channel, ITEM)) {
                   // iterate through all feed items
                   foreach ($rssfeed->channel->item as $item) {
-                    $status = null;
+                    $link   = null;
                     $media  = [];
+                    $status = null;
+
+                    if (property_exists($item, LINK)) {
+                      // retrieve description from parsed XML
+                      $link = html_entity_decode((string)$item->link, ENT_QUOTES | ENT_HTML5);
+                    }
+
+                    if (property_exists($item, MEDIACONTENT)) {
+                      foreach ($item->mediacontent as $mediacontent) {
+                        $tmp = [MEDIACONTENT => null, MEDIADESCRIPTION => null, MEDIARATING => null];
+
+                        if (property_exists($mediacontent->attributes(), URL)) {
+                          $tmp[MEDIACONTENT] = html_entity_decode((string)$mediacontent->attributes()->url, ENT_QUOTES | ENT_HTML5);
+                        }
+                        if (property_exists($mediacontent, MEDIADESCRIPTION)) {
+                          $tmp[MEDIADESCRIPTION] = html_entity_decode((string)$mediacontent->mediadescription, ENT_QUOTES | ENT_HTML5);
+                        }
+                        if (property_exists($mediacontent, MEDIARATING)) {
+                          $tmp[MEDIARATING] = html_entity_decode((string)$mediacontent->mediarating, ENT_QUOTES | ENT_HTML5);
+                        }
+
+                        if (null !== $tmp[MEDIACONTENT]) {
+                          $media[] = $tmp;
+                        }
+                      }
+                    }
 
                     if (property_exists($item, DESCRIPTION)) {
                       // retrieve description from parsed XML
@@ -122,28 +150,8 @@
                       }
                     }
 
-                    if (property_exists($item, MEDIACONTENT)) {
-                      foreach ($item->mediacontent as $mediacontent) {
-                        $tmp = [MEDIACONTENT => null, MEDIADESCRIPTION => null, MEDIARATING => null];
-
-                        if (property_exists($mediacontent->attributes(), URL)) {
-                          $tmp[MEDIACONTENT] = html_entity_decode((string)$mediacontent->attributes()->url, ENT_QUOTES | ENT_HTML5);
-                        }
-                        if (property_exists($mediacontent, MEDIADESCRIPTION)) {
-                          $tmp[MEDIADESCRIPTION] = html_entity_decode((string)$mediacontent->mediadescription, ENT_QUOTES | ENT_HTML5);
-                        }
-                        if (property_exists($mediacontent, MEDIARATING)) {
-                          $tmp[MEDIARATING] = html_entity_decode((string)$mediacontent->mediarating, ENT_QUOTES | ENT_HTML5);
-                        }
-
-                        if (null !== $tmp[MEDIACONTENT]) {
-                          $media[] = $tmp;
-                        }
-                      }
-                    }
-
-                    if (null !== $status) {
-                      $entries[] = [STATUS => $status, MEDIA  => $media];
+                    if ((null !== $link) && (null !== $status)) {
+                      $entries[] = [LINK => $link, MEDIA  => $media, STATUS => $status];
                     }
                   }
                 }
@@ -178,7 +186,8 @@
 
                   // enforce the maximum tweet length
                   if (MAX_TWEET_LENGTH < strlen($entry[STATUS])) {
-                    $entry[STATUS] = substr($entry[STATUS], 0, MAX_TWEET_LENGTH-strlen(MAX_TWEET_SUFFIX)).MAX_TWEET_SUFFIX;
+                    $entry[STATUS] = substr($entry[STATUS], 0, MAX_TWEET_LENGTH-strlen(MAX_TWEET_SUFFIX)-TWITTER_SHORT_URL_LENGTH).
+                                     MAX_TWEET_SUFFIX.$entry[LINK];
                   }
 
                   // assume we succeed with the upload
