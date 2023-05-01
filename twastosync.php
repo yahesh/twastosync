@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-  // twastosync v0.9a0
+  // twastosync v0.10a0
   //
   // Copyright (c) 2019-2023, Yahe
   // All rights reserved.
@@ -30,7 +30,7 @@
   define("ALT_TEXT",                 "alt_text");              // alt-text field name
   define("CHANNEL",                  "channel");               // channel field name
   define("DESCRIPTION",              "description");           // description field name
-  define("HORIZONTAL_LINE",          "<hr />");                // horizontal line in description used for content warnings
+  define("HORIZONTAL_LINE",          "<hr>");                  // horizontal line in description used for content warnings
   define("ITEM",                     "item");                  // item field name
   define("LINE_BREAK",               "<br />");                // line break in description used for line breaks
   define("LINK",                     "link");                  // link field name
