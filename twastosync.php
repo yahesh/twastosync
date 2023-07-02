@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-  // twastosync v0.10a0
+  // twastosync v0.11a0
   //
   // Copyright (c) 2019-2023, Yahe
   // All rights reserved.
@@ -103,7 +103,7 @@
                     $status = null;
 
                     if (property_exists($item, LINK)) {
-                      // retrieve description from parsed XML
+                      // retrieve link from parsed XML
                       $link = html_entity_decode((string)$item->link, ENT_QUOTES | ENT_HTML5);
                     }
 
@@ -167,10 +167,16 @@
               // iterate through all entries and tweet them if we don't know them
               $newknownlist = false;
               foreach ($entries as $entry) {
+                // TODO:
+                // remove in the future as we have switched to comparing the links
+                // to identify already-synced toots
                 $hash = hash("sha256", $entry[STATUS], false);
 
                 // check if this is a known entry
-                if (!array_key_exists($hash, $knownlist)) {
+                // TODO:
+                // remove the comparision of the $hash in the future as we have switched
+                // to comparing the links to identify already-synced toots
+                if (!array_key_exists(strtolower($entry[LINK]), $knownlist) && !array_key_exists($hash, $knownlist)) {
                   // we assume that we will succeed
                   $success = true;
 
@@ -232,15 +238,15 @@
                   // check the return code
                   if ($success) {
                     // add new entry to the known-list
-                    $knownlist[$hash] = $hash;
-                    $newknownlist     = true;
+                    $knownlist[strtolower($entry[LINK])] = strtolower($entry[LINK]);
+                    $newknownlist                        = true;
 
-                    print("TWEETED: ".$entry[STATUS]."\n");
+                    print("TWEETED: ".$entry[LINK]."\n");
                   } else {
-                    print("FAILED: ".$entry[STATUS]."\n");
+                    print("FAILED: ".$entry[LINK]."\n");
                   }
                 } else {
-                  print("SKIPPED: ".$entry[STATUS]."\n");
+                  print("SKIPPED: ".$entry[LINK]."\n");
                 }
               }
 
